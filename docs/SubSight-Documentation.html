@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SubSight — Complete Documentation</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #1a202c; line-height: 1.55; font-size: 10.5pt;
+    margin: 0; padding: 0;
+  }
+  .cover {
+    page-break-after: always; text-align: center; padding-top: 220px;
+  }
+  .cover h1 { font-size: 34pt; margin: 0; color: #1d4ed8; letter-spacing: -1px; }
+  .cover .tagline { font-size: 13pt; color: #475569; margin-top: 10px; }
+  .cover .meta { margin-top: 60px; color: #94a3b8; font-size: 9.5pt; }
+  h1 { font-size: 17pt; color: #1d4ed8; border-bottom: 2.5px solid #1d4ed8; padding-bottom: 5px; margin-top: 28px; page-break-after: avoid; }
+  h2 { font-size: 13pt; color: #1e3a8a; margin-top: 20px; page-break-after: avoid; }
+  h3 { font-size: 11pt; color: #334155; margin-top: 14px; page-break-after: avoid; }
+  p { margin: 6px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 9.5pt; page-break-inside: avoid; }
+  th { background: #1e3a8a; color: white; padding: 6px 8px; text-align: left; }
+  td { border: 1px solid #cbd5e1; padding: 5px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f1f5f9; }
+  .box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .warn { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .good { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  code { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 3px; padding: 1px 5px; font-family: Consolas, monospace; font-size: 9pt; }
+  ul, ol { margin: 6px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  .pagebreak { page-break-before: always; }
+  .toc td { border: none; padding: 3px 6px; }
+  .toc tr td { background: white !important; }
+  .qa { margin: 10px 0; page-break-inside: avoid; }
+  .qa .q { font-weight: bold; color: #1e3a8a; }
+  .qa .a { margin-top: 3px; }
+  .pill { display: inline-block; border-radius: 10px; padding: 1px 9px; font-size: 8.5pt; font-weight: bold; }
+  .pill.green { background: #dcfce7; color: #15803d; }
+  .pill.red { background: #fee2e2; color: #b91c1c; }
+  .pill.amber { background: #fef3c7; color: #b45309; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover">
+  <h1>SubSight</h1>
+  <div class="tagline">Reddit Intelligence for Startup Founders</div>
+  <div class="tagline" style="font-size:10.5pt; margin-top:30px;">Complete Product &amp; Technical Documentation</div>
+  <div class="meta">Version 1.0 &nbsp;·&nbsp; July 2026<br>Runs locally at http://localhost:5173</div>
+</div>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<h1>Table of Contents</h1>
+<table class="toc">
+  <tr><td>1.</td><td>What is SubSight?</td></tr>
+  <tr><td>2.</td><td>How It Works — The Analysis Pipeline</td></tr>
+  <tr><td>3.</td><td>Data Sources Explained (Apify, OAuth, RSS, Archive)</td></tr>
+  <tr><td>4.</td><td>The Relevance Filter</td></tr>
+  <tr><td>5.</td><td>Tab-by-Tab Guide: Overview</td></tr>
+  <tr><td>6.</td><td>Tab-by-Tab Guide: Topic Intelligence</td></tr>
+  <tr><td>7.</td><td>Tab-by-Tab Guide: Customer DNA</td></tr>
+  <tr><td>8.</td><td>Tab-by-Tab Guide: Cross-Interests</td></tr>
+  <tr><td>9.</td><td>Tab-by-Tab Guide: Product Radar</td></tr>
+  <tr><td>10.</td><td>Tab-by-Tab Guide: Conversations</td></tr>
+  <tr><td>11.</td><td>The Ask AI Chat Assistant</td></tr>
+  <tr><td>12.</td><td>Data Storage &amp; Privacy</td></tr>
+  <tr><td>13.</td><td>Honest Limitations</td></tr>
+  <tr><td>14.</td><td>FAQ — Every Question Answered</td></tr>
+  <tr><td>15.</td><td>Glossary of Terms</td></tr>
+</table>
+
+<!-- ═══════════════ 1 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>1. What is SubSight?</h1>
+<p>SubSight is a <b>Reddit market-intelligence tool</b>. You type any topic — "hydration drinks", "protein powder", "sleep tracking apps" — and it scrapes hundreds of real Reddit conversations about that topic, analyzes them with NLP and Claude AI, and presents the findings as an interactive dashboard.</p>
+
+<h2>Who it's for</h2>
+<ul>
+  <li><b>Startup founders</b> validating an idea: is there real demand? What do people complain about?</li>
+  <li><b>Marketers</b> researching an audience: what language do they use? Where do they hang out?</li>
+  <li><b>Product managers</b> mining feature requests and complaints about competitor products.</li>
+  <li><b>Analysts</b> who need a fast, structured read of what a community actually thinks.</li>
+</ul>
+
+<h2>Why Reddit?</h2>
+<p>Reddit is the largest public forum where people discuss products and problems <b>honestly and anonymously</b>. Unlike reviews (often incentivized) or surveys (people say what sounds good), Reddit conversations show unfiltered opinions: what people actually buy, what annoyed them, what they recommend to friends. SubSight turns that raw conversation into structured intelligence.</p>
+
+<h2>Core capabilities at a glance</h2>
+<table>
+  <tr><th>Capability</th><th>What you get</th></tr>
+  <tr><td>Live scraping</td><td>Hundreds of topic-relevant Reddit posts, fetched at analysis time</td></tr>
+  <tr><td>Relevance filtering</td><td>Off-topic posts automatically dropped before analysis</td></tr>
+  <tr><td>Sentiment analysis</td><td>Every post/comment scored positive / neutral / negative</td></tr>
+  <tr><td>Topic clustering</td><td>Conversations grouped into named themes (AI-labeled)</td></tr>
+  <tr><td>AI personas</td><td>3–5 customer archetypes derived from real posts</td></tr>
+  <tr><td>Pain-point mining</td><td>Top frustrations ranked by frequency with verbatim quotes</td></tr>
+  <tr><td>Product detection</td><td>AI-validated brands/products people discuss, with sentiment</td></tr>
+  <tr><td>Audience mapping</td><td>Other communities your audience is active in + targeting playbook</td></tr>
+  <tr><td>AI chat</td><td>Ask natural-language questions over the research data</td></tr>
+  <tr><td>Persistence</td><td>Every research saved locally; revisit past analyses anytime</td></tr>
+</table>
+
+<h2>Technology (for the technically curious)</h2>
+<table>
+  <tr><th>Layer</th><th>Technology</th></tr>
+  <tr><td>Frontend</td><td>React 18 + TypeScript + Vite + Tailwind CSS, dark dashboard UI (port 5173)</td></tr>
+  <tr><td>Backend</td><td>Python FastAPI (port 8001)</td></tr>
+  <tr><td>Database</td><td>SQLite (local file, never leaves your machine)</td></tr>
+  <tr><td>NLP</td><td>VADER sentiment, TF-IDF keyword extraction, K-Means topic clustering</td></tr>
+  <tr><td>AI analysis</td><td>Claude Sonnet (personas, pain points, products, cluster names, playbook)</td></tr>
+  <tr><td>AI chat</td><td>Claude Haiku (fast, low-cost per-message)</td></tr>
+  <tr><td>Charts</td><td>Recharts (treemap, bars, donut, timeline)</td></tr>
+</table>
+
+<!-- ═══════════════ 2 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>2. How It Works — The Analysis Pipeline</h1>
+<p>When you type a topic and press Search, a 7-stage pipeline runs once. Everything is computed up front and saved, so browsing the dashboard afterwards is instant and free.</p>
+
+<h2>Stage 1 — Subreddit discovery (≈5%)</h2>
+<p>SubSight searches Reddit for your topic and observes <b>which communities the matching posts come from</b>. Communities are ranked by how many topic-relevant posts they contain — a subreddit needs 2+ relevant posts to rank highly, so a community that matched one stray keyword can't hijack the analysis. The top ~12 become the focus communities.</p>
+
+<h2>Stage 2 — Post &amp; comment scraping (≈12–38%)</h2>
+<p>The scraper collects posts up to your requested amount using the best available data source (see Section 3). Searches run across all of Reddit <i>and</i> inside each discovered community, using multiple sort orders (relevance, top all-time, top this year/month, newest, most-commented) and query variants ("[topic] best", "[topic] problems", "[topic] review", "[topic] recommendations") to capture diverse conversation angles.</p>
+
+<h2>Stage 3 — Relevance filtering (continuous)</h2>
+<p>Every scraped post passes through the relevance filter (Section 4). Off-topic posts are dropped and the count is reported on the Overview tab.</p>
+
+<h2>Stage 4 — User profiling (≈43–50%)</h2>
+<p>Up to 40 unique post authors are profiled: their recent submissions <i>and</i> comments across all of Reddit are fetched to learn which other communities they're active in. NSFW communities and adult-flagged posts are excluded. This powers the Cross-Interests tab.</p>
+
+<h2>Stage 5 — NLP analysis (≈52–62%)</h2>
+<ul>
+  <li><b>Sentiment</b>: VADER scores every post and comment (positive/neutral/negative). VADER is a lexicon-based analyzer tuned for social-media language — it understands intensifiers ("really bad"), negation ("not good"), and slang.</li>
+  <li><b>Topic clustering</b>: post texts are vectorized with TF-IDF and grouped with K-Means into up to 8 clusters. The topic's own words are excluded from cluster keywords so clusters differentiate on what makes them <i>unique</i>.</li>
+  <li><b>Cluster naming</b>: Claude reads each cluster's keywords + sample titles and writes a distinct, human-readable name (e.g. "Lead Contamination Reports" instead of "Protein &amp; Powder").</li>
+  <li><b>Keywords</b>: TF-IDF across all text produces the word cloud, with 200+ stop-words filtering out chatter ("hello", "guys", "tomorrow") and Reddit boilerplate.</li>
+</ul>
+
+<h2>Stage 6 — Claude AI analysis (≈62–85%)</h2>
+<ul>
+  <li><b>Products</b>: Claude reads the top posts and extracts only products/brands genuinely discussed in the topic's context — generic websites, movie characters, and incidental mentions are rejected.</li>
+  <li><b>Personas</b>: 3–5 customer archetypes with demographics, pain points, goals, and verbatim quotes.</li>
+  <li><b>Pain points</b>: top 10 frustrations scored 1–10 by frequency.</li>
+  <li><b>Targeting playbook</b>: 4–5 actionable strategies combining the cross-interest data with the personas.</li>
+</ul>
+
+<h2>Stage 7 — Summary snapshot (≈90–100%)</h2>
+<p>A compact executive summary (~2,000 tokens) of everything found is generated and stored. This appears as the "AI Executive Summary" card on the Overview tab and becomes the knowledge base for the Ask AI chat assistant.</p>
+
+<div class="box"><b>Typical run time:</b> 3–8 minutes depending on data source and volume. The progress bar reports the exact stage at all times.</div>
+
+<!-- ═══════════════ 3 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>3. Data Sources Explained</h1>
+<p>SubSight has a <b>four-tier fallback chain</b>. It always tries the best available source first and degrades gracefully — a research run never fails just because one source is unavailable. The Overview tab always shows which source was actually used.</p>
+
+<table>
+  <tr><th>Tier</th><th>Source</th><th>Cost</th><th>Comments?</th><th>Real scores?</th><th>Freshness</th></tr>
+  <tr><td>1</td><td>Apify scraper</td><td>Paid (~$1–2.50/run)</td><td>Top ~15 per post</td><td>Yes</td><td>Live</td></tr>
+  <tr><td>2</td><td>Reddit OAuth API</td><td>Free (needs app setup)</td><td>Top ~15 per post</td><td>Yes</td><td>Live</td></tr>
+  <tr><td>3</td><td>Reddit RSS feeds</td><td>Free</td><td>No (post bodies only)</td><td>No</td><td>Live</td></tr>
+  <tr><td>4</td><td>Pullpush archive</td><td>Free</td><td>Yes</td><td>Yes</td><td>~1 year delay</td></tr>
+</table>
+
+<h2>Tier 1 — Apify (paid scraping service)</h2>
+<p>Apify is a commercial web-scraping platform. SubSight uses its Reddit scraper actor, which browses Reddit through <b>residential proxy IPs</b> (real-household internet addresses) so Reddit doesn't block it. This is the highest-quality source:</p>
+<ul>
+  <li>Runs full Reddit searches with your topic, plus <code>subreddit:</code>-restricted searches inside each discovered community</li>
+  <li>Collects real upvote scores and comment counts</li>
+  <li>Fetches up to 15 top comments per post — comments are where buying decisions and complaints live</li>
+</ul>
+<div class="warn"><b>Cost reality:</b> residential proxies are the expensive part. A 300–500 post run costs roughly $1–2.50 in Apify credits. The free plan includes $5/month; the Starter plan ($39/month) covers roughly 15–30 runs. When credits run out, SubSight automatically falls through to the next tier — nothing breaks.</div>
+
+<h2>Tier 2 — Reddit OAuth API (official, free)</h2>
+<p>Reddit's official API. Requires a free "script app" created at reddit.com/prefs/apps (client ID + secret in the backend's .env file). Provides real scores and comments like Apify, at zero cost, with a 100 requests/minute allowance. If configured, this is used whenever Apify is unavailable — and is arguably the best option overall for a personal tool.</p>
+
+<h2>Tier 3 — Reddit RSS feeds (free, no setup)</h2>
+<p><b>What RSS is:</b> RSS is a public web-feed format. Every Reddit search and community publishes a feed URL (e.g. <code>reddit.com/search.rss?q=hydration+drinks</code>) that returns the latest matching posts as machine-readable XML — no account or API key required. It exists so feed readers can subscribe to content, and SubSight reads it the same way.</p>
+<p><b>How SubSight uses it:</b> a planned sequence of ~16 feed requests — the topic across six sort orders, four query variants, and topic searches inside each discovered community — each requesting 100 posts. Reddit throttles anonymous feeds to roughly one request per 6 seconds, so SubSight paces itself and backs off automatically when rate-limited.</p>
+<p><b>Limitations:</b> feeds contain post titles and bodies but <b>no comments and no upvote scores</b>. Sentiment and topic analysis still work well (post bodies carry plenty of opinion), but comment-level insight is reduced and "top post" ordering is unavailable. This is the source that works out-of-the-box with zero configuration and zero cost.</p>
+
+<h2>Tier 4 — Pullpush archive (last resort + user profiling)</h2>
+<p>Pullpush.io is a community-run archive of historical Reddit data, lagging roughly a year behind. It's used as the last resort for posts if every live source fails, and — importantly — it's the workhorse behind <b>user profiling</b> for the Cross-Interests tab, because it allows looking up any user's posting history without authentication.</p>
+
+<div class="good"><b>Honest labeling:</b> the green/amber banner at the top of the Overview tab always states which source actually delivered the data for that specific research — it is recorded at scrape time, not guessed from configuration.</div>
+
+<!-- ═══════════════ 4 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>4. The Relevance Filter</h1>
+<p>Reddit search is fuzzy: a search for "hydration drinks" can surface a post about barista jobs because the word "drinks" appears once. Without protection, irrelevant posts poison every downstream insight. SubSight guards against this in three ways:</p>
+
+<h2>1. Search-only scraping</h2>
+<p>SubSight <b>never</b> scrapes a community's raw "new posts" feed. Every request is a topic search — global or restricted inside a community — so results start out relevance-ranked.</p>
+
+<h2>2. Stem-based post filtering</h2>
+<p>Every scraped post's title + body must mention at least one meaningful word from your topic. Words are <i>stemmed</i> so variations match: "hydration" matches "hydrated", "hydrating"; "drinks" matches "drink", "drinking". Posts with zero topic mentions are dropped. The Overview banner reports exactly how many were filtered (e.g. "98 off-topic posts filtered out").</p>
+
+<h2>3. Ranked subreddit discovery</h2>
+<p>Communities are ranked by their count of relevant posts, and communities with only a single matching post are deprioritized — preventing one coincidental keyword hit from dragging a whole unrelated community into the analysis.</p>
+
+<div class="box"><b>Trade-off to know:</b> the filter means you sometimes get fewer posts than requested (e.g. 202 of 300). That's deliberate: 200 relevant posts produce better insight than 300 posts where a third are noise. The dashboard warns you when the final count is low enough to weaken statistical confidence.</div>
+
+<!-- ═══════════════ 5 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>5. Tab Guide: Overview</h1>
+<p>The landing tab — your research's health check and executive briefing in one screen.</p>
+
+<h2>Data source &amp; quality banner</h2>
+<ul>
+  <li><b>Green (Live)</b>: data fetched from Reddit at analysis time via Apify, OAuth, or RSS.</li>
+  <li><b>Amber (Archive)</b>: live sources unavailable; historical archive used (~1 year old data).</li>
+  <li>Shows how many off-topic posts the relevance filter removed.</li>
+  <li>A <b>Limited data warning</b> appears when the relevant-post count is well below what you requested, with advice (broaden the topic phrase, re-run later).</li>
+</ul>
+
+<h2>AI Executive Summary (collapsible card)</h2>
+<p>Claude's condensed read of the entire research: top themes, personas, pain points, products, cross-interests, and representative quotes. <b>Read this first</b> — it's the "so what" before the charts. Click the header to collapse/expand.</p>
+
+<h2>Four hero stat cards</h2>
+<table>
+  <tr><th>Stat</th><th>Meaning</th><th>How to read it</th></tr>
+  <tr><td>Posts Analyzed</td><td>Relevant posts scraped and analyzed</td><td>200+ = solid sample; &lt;100 = directional only</td></tr>
+  <tr><td>Comments</td><td>Replies captured inside those posts</td><td>Richer signal than titles; 0 under RSS (no comments in feeds)</td></tr>
+  <tr><td>Unique Users</td><td>Distinct Reddit accounts writing</td><td>High = broad interest; low = few loud voices</td></tr>
+  <tr><td>Subreddits</td><td>Communities the posts came from</td><td>Many = topic crosses audiences; few = niche</td></tr>
+</table>
+
+<h2>Sentiment Score (donut, 0–100)</h2>
+<p>Percentage of positive posts among all analyzed. <span class="pill green">60+</span> people generally like/enjoy the topic. <span class="pill amber">40–60</span> mixed/neutral discussion. <span class="pill red">&lt;40</span> heavy complaints — often a signal of unmet needs (which can be a startup opportunity, not a red flag).</p>
+
+<h2>Top Subreddits (bar chart)</h2>
+<p>Which communities host the most topic conversation. This tells you <b>where your audience already gathers</b> — the first places to engage, advertise, or study.</p>
+
+<h2>Activity Timeline</h2>
+<p>Post volume per month. Rising = growing interest; spikes = news events or viral moments worth investigating; flat = stable evergreen topic. Note: under RSS the timeline reflects the recency-weighted sample, not total Reddit history.</p>
+
+<h2>Most Discussed Terms (word cloud)</h2>
+<p>The words your audience actually uses, sized by frequency. Use these verbatim in marketing copy, SEO keywords, and interview scripts — this is your customers' native vocabulary, not your assumed jargon.</p>
+
+<!-- ═══════════════ 6 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>6. Tab Guide: Topic Intelligence</h1>
+<p>Answers: <b>"What are the distinct conversations happening inside this topic?"</b></p>
+
+<h2>How clusters are built</h2>
+<ol>
+  <li>Every post's text is converted to a TF-IDF vector (which words matter most in it).</li>
+  <li>K-Means groups similar posts into up to 8 clusters.</li>
+  <li>Keywords for each cluster are extracted <i>excluding the topic's own words</i> — in a "protein powder" search every cluster contains "protein", so those words can't tell clusters apart.</li>
+  <li>Claude reads each cluster's keywords + sample titles and writes a distinct plain-language name, e.g. "Best Brand Recommendations", "Lead Contamination Reports", "Ditching Powder For Real Food".</li>
+</ol>
+
+<h2>Elements on the tab</h2>
+<table>
+  <tr><th>Element</th><th>What it shows</th><th>How to use it</th></tr>
+  <tr><td>Quick stats row</td><td>Most discussed / most positive / most negative cluster</td><td>Instant read of where the heat is</td></tr>
+  <tr><td>Treemap</td><td>Clusters as proportional rectangles, colored by sentiment</td><td>Bigger box = more conversation; red box = complaint-heavy theme</td></tr>
+  <tr><td>Volume comparison</td><td>Horizontal bars ranking clusters by post count</td><td>Precise size comparison the treemap approximates</td></tr>
+  <tr><td>Deep-dive cards</td><td>Per-cluster sentiment split, keywords, expandable top posts</td><td>Click "Show top posts" to read the actual threads driving a theme</td></tr>
+  <tr><td>Timeline</td><td>Cluster activity over months</td><td>Spot which themes are growing vs fading</td></tr>
+</table>
+
+<div class="good"><b>Founder move:</b> negative clusters are gold. A cluster like "Side effects &amp; safety concerns" with 25% of the conversation is a validated market anxiety your product can address head-on.</div>
+
+<!-- ═══════════════ 7 ═══════════════ -->
+<h1>7. Tab Guide: Customer DNA</h1>
+<p>Answers: <b>"Who exactly are these people, and what do they struggle with?"</b></p>
+
+<h2>Personas (3–5 cards)</h2>
+<p>Claude reads the highest-scoring posts and identifies recurring <i>types</i> of people — patterns of similar needs, language, and frustrations. Each persona card contains:</p>
+<ul>
+  <li><b>Name &amp; archetype</b> — e.g. "The Evidence-Seeker: a skeptical, research-driven adult who questions mainstream advice"</li>
+  <li><b>Demographics</b> — age range and gender skew inferred from language and context</li>
+  <li><b>Pain points</b> — that persona's specific frustrations</li>
+  <li><b>Goals</b> — what they're trying to achieve</li>
+  <li><b>Verbatim quotes</b> — their actual words from real posts</li>
+  <li><b>Subreddits</b> — where this persona hangs out</li>
+</ul>
+<div class="box">These are <b>not invented marketing personas</b> — every element traces back to real posts in your dataset. The quotes are copy-pasteable evidence for pitch decks.</div>
+
+<h2>Pain Points by Frequency</h2>
+<p>The top 10 frustrations across the whole dataset, each scored <b>1–10 by how often it appears</b>, with an illustrative quote. Red bars (8+) are widespread, validated pains — the strongest signals of what a product should fix. Scores come from Claude's frequency judgment over the sampled posts.</p>
+
+<h2>Quote Carousel</h2>
+<p>Rotating verbatim quotes from the personas — useful raw material for landing-page copy, ads that speak the customer's language, and investor decks ("here's the market saying it in their own words").</p>
+
+<!-- ═══════════════ 8 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>8. Tab Guide: Cross-Interests</h1>
+<p>Answers: <b>"What else is my audience into — and how do I reach them?"</b></p>
+
+<h2>Two measurement methods (the tab tells you which was used)</h2>
+<table>
+  <tr><th>Method</th><th>How it works</th><th>When used</th></tr>
+  <tr><td><b>User history</b> (preferred)</td><td>Up to 40 authors of topic posts are profiled: their recent submissions and comments across Reddit reveal which other communities they're active in. Percentages = share of profiled users active in each community.</td><td>When enough authors (5+) have retrievable history</td></tr>
+  <tr><td><b>Community distribution</b> (fallback)</td><td>Shows which communities the topic conversation itself happens in. Percentages = share of topic posts per community.</td><td>When user histories aren't available (very recent authors)</td></tr>
+</table>
+
+<h2>Quality safeguards</h2>
+<ul>
+  <li><b>NSFW filtering</b> — adult communities and posts flagged 18+ are excluded at the source. A business dashboard should never surface porn subreddits, period.</li>
+  <li><b>2+ user minimum</b> — a community appears only if at least two profiled users are active there. One user's personal hangouts are noise, not an audience pattern.</li>
+  <li><b>Low-signal exclusion</b> — mega-viral catch-alls (AskReddit, funny, memes, pics…) are excluded because nearly every Redditor touches them; they say nothing about <i>your</i> audience specifically.</li>
+  <li><b>Small-sample warning</b> — under 15 profiled users, the tab explicitly tells you to treat percentages as directional.</li>
+</ul>
+
+<h2>Elements on the tab</h2>
+<table>
+  <tr><th>Element</th><th>What it shows</th></tr>
+  <tr><td>What is this? box</td><td>Plain-language explanation of the method used and the sample size — the tab is always honest about what the numbers mean</td></tr>
+  <tr><td><b>How to Reach This Audience</b></td><td>4–5 AI-generated targeting strategies, each with the insight (what the data shows) and a concrete action (what to do). E.g. "60% overlap with gaming communities → frame your product as desk-session fuel and advertise on r/pcmasterrace"</td></tr>
+  <tr><td>Top Audience Interests</td><td>Top 5 overlapping communities as cards with percentages</td></tr>
+  <tr><td>Interest Categories</td><td>Communities grouped into lifestyle themes (Health &amp; Fitness, Gaming, Finance, Travel…) with per-category color coding</td></tr>
+  <tr><td>Full ranking</td><td>Every qualifying community with percentage bars and user counts; names link to the live subreddit</td></tr>
+</table>
+
+<div class="good"><b>Marketing move:</b> the categories map your ad-targeting universe. If 25% of your hydration audience overlaps fitness communities and 15% overlaps gaming, you now know two ad angles, two influencer pools, and two content styles that will land.</div>
+
+<!-- ═══════════════ 9 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>9. Tab Guide: Product Radar</h1>
+<p>Answers: <b>"Which products and brands does this audience already use, love, or hate?"</b></p>
+
+<h2>How detection works</h2>
+<p>Claude reads the top posts and extracts only products, brands, and solutions <b>discussed in the topic's context</b>. It explicitly rejects: products mentioned incidentally with no topic connection, generic websites (YouTube, Discord), people and fictional characters, and vague terms. Each detected product carries a category, a mention count, an overall sentiment, a one-line "why people mention this", and sample quotes.</p>
+
+<h2>The three sentiment groups</h2>
+<table>
+  <tr><th>Label</th><th>Meaning</th><th>Strategic read</th></tr>
+  <tr><td><span class="pill green">LOVED</span></td><td>People recommend it</td><td>Your competitors or potential partners — this is what you'll be compared against</td></tr>
+  <tr><td><span class="pill red">CRITICIZED</span></td><td>People complain about it</td><td>Unmet needs — market gaps your product could fill; read the quotes for the exact complaint</td></tr>
+  <tr><td><span class="pill amber">MIXED</span></td><td>Divided opinions</td><td>Opportunity if you can solve the specific gripes splitting the audience</td></tr>
+</table>
+<p>Click any product card to expand "What Redditors said" — the verbatim quotes behind the label.</p>
+<div class="warn"><b>If few products appear:</b> the conversation may be genuinely non-commercial (educational/general topics), or the sample may be small. Product-oriented topics ("electrolyte supplements", "standing desks") yield far more than abstract ones ("staying healthy").</div>
+
+<!-- ═══════════════ 10 ═══════════════ -->
+<h1>10. Tab Guide: Conversations</h1>
+<p>The raw evidence layer — every analyzed post, browsable and filterable.</p>
+<ul>
+  <li><b>Post cards</b> show community, sentiment badge, topic cluster, title, body preview, and upvote score.</li>
+  <li><b>Click a card</b> to expand its top comments (when the data source provides comments).</li>
+  <li><b>External-link icon</b> opens the original thread on reddit.com — full context is always one click away.</li>
+  <li><b>Sentiment filter</b> narrows to positive / neutral / negative posts; pagination walks the full set.</li>
+</ul>
+<div class="box"><b>Use this tab to:</b> verify any AI finding against source material, harvest exact customer phrases, find users to interview, and discover edge cases the aggregates smooth over. Every insight in the other tabs is derived from exactly these posts — nothing else.</div>
+
+<!-- ═══════════════ 11 ═══════════════ -->
+<h1>11. The Ask AI Chat Assistant</h1>
+<p>The floating <b>Ask AI</b> button opens a chat panel that answers questions about the current research in natural language.</p>
+<h2>How it works</h2>
+<p>When analysis completes, a compact summary snapshot of all findings is stored with the job. The chat assistant receives that snapshot as its knowledge base and answers questions against it — it does not re-read all posts per message, which keeps responses fast (1–3 seconds) and costs negligible.</p>
+<h2>Good questions to ask</h2>
+<ul>
+  <li>"What's the biggest unmet need in this market?"</li>
+  <li>"Which product gets the most complaints and why?"</li>
+  <li>"Summarize the difference between persona 1 and persona 3."</li>
+  <li>"What would be a good product idea based on these conversations?"</li>
+  <li>"Draft three ad headlines using this audience's language."</li>
+</ul>
+<div class="warn"><b>Limitation:</b> the assistant knows the research summary, not every individual post. For granular digging ("show me every post mentioning X"), use the Conversations tab's filters instead.</div>
+
+<!-- ═══════════════ 12 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>12. Data Storage &amp; Privacy</h1>
+<ul>
+  <li>All data lives in a local SQLite file (<code>backend/data/subsight.db</code>) on your machine. Nothing is uploaded anywhere except the AI analysis calls to Anthropic's API (post samples for analysis) and the scraping requests themselves.</li>
+  <li>Every research job persists: posts, comments, profiles, clusters, personas, products, stats, and the chat summary. Close the app, come back next week — it's all there under Recent Research.</li>
+  <li>Jobs can be deleted individually from the home page.</li>
+  <li>All scraped content is <b>public Reddit data</b> — SubSight never accesses private messages, private communities, or logged-in content.</li>
+</ul>
+
+<!-- ═══════════════ 13 ═══════════════ -->
+<h1>13. Honest Limitations</h1>
+<table>
+  <tr><th>Limitation</th><th>Detail</th></tr>
+  <tr><td>Sampling, not census</td><td>No tool can fetch "all of Reddit". SubSight analyzes the few hundred most relevant posts Reddit's search surfaces. For market intelligence this is statistically sufficient; for exhaustive research it is not.</td></tr>
+  <tr><td>RSS has no comments/scores</td><td>Under the free RSS tier, comment text and upvote counts are unavailable. Sentiment still works on post bodies; comment-level nuance is reduced.</td></tr>
+  <tr><td>Reddit skews</td><td>Reddit's user base skews younger, male, US-centric, and tech-comfortable. Treat findings as one strong signal, not the whole market.</td></tr>
+  <tr><td>AI judgment calls</td><td>Personas, pain-point scores, and product sentiment are Claude's reading of the sample. The verbatim quotes and Conversations tab let you verify everything.</td></tr>
+  <tr><td>User profiling coverage</td><td>Cross-interest profiling depends on authors having retrievable history in the archive; very new accounts may not resolve, shrinking the sample.</td></tr>
+  <tr><td>Rate limits</td><td>Free sources are throttled by Reddit (~1 request/6s), which is why RSS-tier runs take longer.</td></tr>
+  <tr><td>Post count vs requested</td><td>You may receive fewer posts than requested — after deduplication and relevance filtering, only genuinely on-topic posts remain. Quality over quantity, by design.</td></tr>
+</table>
+
+<!-- ═══════════════ 14 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>14. FAQ — Every Question Answered</h1>
+
+<div class="qa"><div class="q">Q: Is the data real and current?</div><div class="a">Yes — when the banner says "Live", posts were fetched from Reddit at the moment you ran the research. The amber "Archive" banner means live sources were unavailable and ~1-year-old archive data was used.</div></div>
+
+<div class="qa"><div class="q">Q: Does it analyze ALL Reddit posts about my topic?</div><div class="a">No, and nothing can. Reddit's search exposes a bounded window of results. SubSight analyzes the most relevant few hundred posts across multiple sort orders and query variants — a representative sample, which is what market intelligence needs.</div></div>
+
+<div class="qa"><div class="q">Q: I asked for 500 posts but got 350. Why?</div><div class="a">Three reducers: deduplication (the same post surfaces in multiple searches), the relevance filter (off-topic posts dropped — the count is shown on Overview), and source depth limits. The remaining posts are all genuinely on-topic.</div></div>
+
+<div class="qa"><div class="q">Q: Why did my research take 8 minutes?</div><div class="a">On the free RSS tier, Reddit throttles requests to ~1 per 6 seconds, and profiling 40 users takes a few minutes on the archive's rate limits. Paid Apify or free OAuth cut this substantially.</div></div>
+
+<div class="qa"><div class="q">Q: What exactly is a subreddit?</div><div class="a">A topic-specific community on Reddit, written "r/name" — r/fitness is the fitness community, r/HydroHomies is a community about drinking water. Each has its own members, culture, and moderators.</div></div>
+
+<div class="qa"><div class="q">Q: What do upvotes/scores mean?</div><div class="a">Reddit users vote posts up or down; the score is the net. A high-score post resonated with many people — so scores are a built-in importance ranking (available under Apify/OAuth tiers).</div></div>
+
+<div class="qa"><div class="q">Q: How are the sentiment labels decided?</div><div class="a">VADER, a social-media-tuned sentiment lexicon, scores each text from -1 to +1; thresholds map that to negative/neutral/positive. It handles negation ("not great"), intensity ("absolutely love"), and slang.</div></div>
+
+<div class="qa"><div class="q">Q: Where do the persona names come from?</div><div class="a">Claude invents the archetype names ("The Evidence-Seeker"), but every attribute — pains, goals, demographics, quotes — is grounded in actual posts from your dataset. Check the quotes against the Conversations tab anytime.</div></div>
+
+<div class="qa"><div class="q">Q: Why does Cross-Interests sometimes say "based on where topic posts appear" instead of user history?</div><div class="a">User-history profiling needs enough authors with retrievable posting history. When too few resolve (very new accounts), the tab honestly switches to showing which communities host the conversation — still useful, differently framed.</div></div>
+
+<div class="qa"><div class="q">Q: Can NSFW content appear in my results?</div><div class="a">Adult communities and 18+-flagged posts are filtered out of user profiling and cross-interests. Topic search results themselves are also generally safe because your business topics don't match adult content.</div></div>
+
+<div class="qa"><div class="q">Q: The Product Radar only found 2 products. Is it broken?</div><div class="a">Probably not — some topics just aren't commercial. People discussing "how much water to drink" rarely name brands. Product-centric topics ("electrolyte powder", "running shoes") yield rich product lists. A small sample size also reduces detections.</div></div>
+
+<div class="qa"><div class="q">Q: Can two runs of the same topic give different results?</div><div class="a">Yes, somewhat — Reddit conversation moves, search rankings shift, and clustering has statistical variation. Big themes stay stable; exact counts and small clusters can vary. Each run is a snapshot in time.</div></div>
+
+<div class="qa"><div class="q">Q: Is this legal / allowed?</div><div class="a">SubSight reads only public data: public posts via public feeds and APIs. It respects rate limits and identifies itself. Standard practice for research tools; nothing private is ever accessed.</div></div>
+
+<div class="qa"><div class="q">Q: What does it cost to run?</div><div class="a">The scraping is free on RSS/OAuth tiers (Apify optional, ~$1–2.50/run). AI analysis uses Claude API — roughly $0.10–0.25 per research run, and fractions of a cent per chat message.</div></div>
+
+<div class="qa"><div class="q">Q: Can I export or share results?</div><div class="a">The dashboard is local. For sharing, screenshot tabs or ask the AI chat to summarize findings as text you can paste. (JSON/CSV export is on the roadmap.)</div></div>
+
+<div class="qa"><div class="q">Q: My dashboard shows all zeros / won't load.</div><div class="a">The two local servers may not be running. Backend runs on port 8001, frontend on 5173. Restart them and refresh http://localhost:5173.</div></div>
+
+<!-- ═══════════════ 15 ═══════════════ -->
+<div class="pagebreak"></div>
+<h1>15. Glossary</h1>
+<table>
+  <tr><th>Term</th><th>Definition</th></tr>
+  <tr><td>Subreddit</td><td>A topic-based community on Reddit (r/fitness, r/startups)</td></tr>
+  <tr><td>Post / Submission</td><td>A thread-starting entry in a subreddit: title + optional body/link</td></tr>
+  <tr><td>Comment</td><td>A reply inside a post's discussion thread</td></tr>
+  <tr><td>Upvote / Score</td><td>Net community votes on a post — its popularity ranking</td></tr>
+  <tr><td>Karma</td><td>A user's lifetime accumulated votes</td></tr>
+  <tr><td>NSFW / over_18</td><td>"Not Safe For Work" — Reddit's adult-content flag; filtered out by SubSight</td></tr>
+  <tr><td>OP</td><td>"Original Poster" — the author of a post</td></tr>
+  <tr><td>RSS</td><td>A public web-feed standard; Reddit publishes search results and community feeds in it</td></tr>
+  <tr><td>API</td><td>A structured interface programs use to request data from a service</td></tr>
+  <tr><td>OAuth</td><td>The authorization standard Reddit's official API uses (free "script app" credentials)</td></tr>
+  <tr><td>Residential proxy</td><td>Routing requests through real household IPs so scrapers aren't blocked (Apify)</td></tr>
+  <tr><td>Rate limit / 429</td><td>A server's cap on request frequency; SubSight paces itself and backs off automatically</td></tr>
+  <tr><td>Sentiment analysis</td><td>Classifying text as positive/neutral/negative (VADER algorithm)</td></tr>
+  <tr><td>TF-IDF</td><td>"Term frequency–inverse document frequency" — scores how characteristic a word is for a document</td></tr>
+  <tr><td>K-Means clustering</td><td>Algorithm that groups similar items (here: posts with similar vocabulary)</td></tr>
+  <tr><td>Topic cluster</td><td>A group of posts sharing a conversation theme, AI-named</td></tr>
+  <tr><td>Persona</td><td>A recurring customer archetype derived from real posts</td></tr>
+  <tr><td>Pain point</td><td>A recurring frustration or unmet need expressed by users</td></tr>
+  <tr><td>Cross-interests</td><td>Other communities your topic's audience participates in</td></tr>
+  <tr><td>Stemming</td><td>Reducing words to their root so "hydration"/"hydrated" match</td></tr>
+  <tr><td>Stop-words</td><td>Common words ("the", "hello", "guys") excluded from keyword analysis</td></tr>
+  <tr><td>Pipeline</td><td>The 7-stage process that turns a topic into a finished dashboard</td></tr>
+  <tr><td>Fallback chain</td><td>Apify → OAuth → RSS → Archive; the app automatically uses the best available source</td></tr>
+</table>
+
+<p style="margin-top:40px; text-align:center; color:#94a3b8; font-size:9pt;">— End of Documentation —<br>SubSight · Reddit Intelligence for Startup Founders</p>
+
+</body>
+</html>

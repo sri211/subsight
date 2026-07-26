@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+requests
+sqlalchemy
+pydantic
+pydantic-settings
+python-dotenv
+anthropic
+vaderSentiment
+scikit-learn
+numpy
+aiofiles
+python-multipart
