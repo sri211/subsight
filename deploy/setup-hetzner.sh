@@ -5,7 +5,7 @@ set -e
 
 echo "==> Installing system packages"
 apt update
-apt install -y python3 python3-venv python3-pip nginx certbot python3-certbot-nginx git ufw
+apt install -y python3 python3-venv python3-pip nginx certbot python3-certbot-nginx git
 
 echo "==> Cloning SubSight"
 if [ -d /opt/subsight ]; then
@@ -39,7 +39,7 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/opt/subsight/backend
-ExecStart=/opt/subsight/backend/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001
+ExecStart=/opt/subsight/backend/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8002
 Restart=always
 RestartSec=3
 
@@ -56,7 +56,7 @@ server {
     server_name api.subsight.in;
 
     location / {
-        proxy_pass http://127.0.0.1:8001;
+        proxy_pass http://127.0.0.1:8002;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -66,14 +66,13 @@ server {
 }
 EOF
 ln -sf /etc/nginx/sites-available/subsight /etc/nginx/sites-enabled/subsight
-rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
 
-echo "==> Configuring firewall"
-ufw allow OpenSSH
-ufw allow 'Nginx Full'
-ufw --force enable
+# NOTE: this server already runs other live projects (ReelAgent, MithraAI)
+# and currently has no firewall enabled. This script deliberately does not
+# touch ufw so it can't change the network posture of those other services
+# as a side effect of deploying SubSight.
 
 echo ""
 echo "============================================================"
