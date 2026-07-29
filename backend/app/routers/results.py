@@ -1,23 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.models.database import get_db
 from app.models.schemas import Job, Post, Comment, Topic, Persona, Product, PainPoint
 from app.services.reddit import data_source_name
+from app.routers.deps import get_owned_job
 
 router = APIRouter(prefix="/api/research", tags=["results"])
 
 
-def _get_job_or_404(job_id: str, db: Session) -> Job:
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-    return job
-
-
 @router.get("/{job_id}/overview")
-def get_overview(job_id: str, db: Session = Depends(get_db)):
-    job = _get_job_or_404(job_id, db)
+def get_overview(job: Job = Depends(get_owned_job), db: Session = Depends(get_db)):
+    job_id = job.id
     stats = job.stats or {}
     return {
         "topic": job.topic,
@@ -40,8 +34,8 @@ def get_overview(job_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{job_id}/topics")
-def get_topics(job_id: str, db: Session = Depends(get_db)):
-    _get_job_or_404(job_id, db)
+def get_topics(job: Job = Depends(get_owned_job), db: Session = Depends(get_db)):
+    job_id = job.id
     topics = db.query(Topic).filter(Topic.job_id == job_id).order_by(Topic.size.desc()).all()
     result = []
     for t in topics:
@@ -82,8 +76,8 @@ def get_topics(job_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{job_id}/personas")
-def get_personas(job_id: str, db: Session = Depends(get_db)):
-    _get_job_or_404(job_id, db)
+def get_personas(job: Job = Depends(get_owned_job), db: Session = Depends(get_db)):
+    job_id = job.id
     personas = db.query(Persona).filter(Persona.job_id == job_id).all()
     pain_points = db.query(PainPoint).filter(PainPoint.job_id == job_id).order_by(PainPoint.frequency.desc()).all()
     return {
@@ -113,8 +107,7 @@ def get_personas(job_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{job_id}/interests")
-def get_interests(job_id: str, db: Session = Depends(get_db)):
-    job = _get_job_or_404(job_id, db)
+def get_interests(job: Job = Depends(get_owned_job)):
     stats = job.stats or {}
     return {
         "cross_interests": stats.get("cross_interests", []),
@@ -126,8 +119,8 @@ def get_interests(job_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{job_id}/products")
-def get_products(job_id: str, db: Session = Depends(get_db)):
-    _get_job_or_404(job_id, db)
+def get_products(job: Job = Depends(get_owned_job), db: Session = Depends(get_db)):
+    job_id = job.id
     products = db.query(Product).filter(Product.job_id == job_id).order_by(Product.mentions.desc()).all()
     return [
         {
@@ -144,7 +137,7 @@ def get_products(job_id: str, db: Session = Depends(get_db)):
 
 @router.get("/{job_id}/conversations")
 def get_conversations(
-    job_id: str,
+    job: Job = Depends(get_owned_job),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     subreddit: str = Query(None),
@@ -152,7 +145,7 @@ def get_conversations(
     topic_cluster: str = Query(None),
     db: Session = Depends(get_db),
 ):
-    _get_job_or_404(job_id, db)
+    job_id = job.id
     query = db.query(Post).filter(Post.job_id == job_id)
 
     if subreddit:

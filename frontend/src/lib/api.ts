@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type {
   Job, JobStatus, OverviewData, TopicCluster, PersonasData,
-  InterestsData, Product, ConversationsData, ChatMessage,
+  InterestsData, Product, ConversationsData, ChatMessage, User,
 } from '../types'
 
 // In dev, Vite proxies /api -> localhost:8001 (see vite.config.ts).
@@ -9,6 +9,44 @@ import type {
 // different hosts, so the built app needs the full backend URL baked in
 // at build time via VITE_API_BASE_URL.
 const api = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL || '/api' })
+
+export const TOKEN_KEY = 'subsight_token'
+
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem(TOKEN_KEY)
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
+
+api.interceptors.response.use(
+  res => res,
+  err => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem(TOKEN_KEY)
+      if (location.pathname !== '/login') location.href = '/login'
+    }
+    // 402 (insufficient credits) is left for callers to handle explicitly —
+    // it's an expected, recoverable state, not a session failure
+    return Promise.reject(err)
+  }
+)
+
+export const authApi = {
+  signup: (email: string, password: string) =>
+    api.post<{ token: string; user: User }>('/auth/signup', { email, password }).then(r => r.data),
+  login: (email: string, password: string) =>
+    api.post<{ token: string; user: User }>('/auth/login', { email, password }).then(r => r.data),
+  me: () => api.get<User>('/auth/me').then(r => r.data),
+}
+
+export const paymentsApi = {
+  createOrder: (packId: string) =>
+    api.post<{ order_id: string; amount: number; currency: string; key_id: string; credits: number }>(
+      '/payments/create-order', { pack_id: packId }
+    ).then(r => r.data),
+  verify: (payload: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) =>
+    api.post<{ credits: number }>('/payments/verify', payload).then(r => r.data),
+}
 
 export const researchApi = {
   list: () => api.get<Job[]>('/research/').then(r => r.data),

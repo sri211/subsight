@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, TrendingUp, Trash2, ExternalLink, Clock, MessageSquare } from 'lucide-react'
 import { researchApi } from '../lib/api'
+import { useAuth } from '../hooks/useAuth'
+import CreditBadge from '../components/payments/CreditBadge'
+import BuyCreditsModal from '../components/payments/BuyCreditsModal'
 import type { Job } from '../types'
 
 const EXAMPLE_TOPICS = ['hydration', 'meal prep', 'sleep tracking', 'productivity apps', 'standing desks']
@@ -17,21 +20,34 @@ export default function Home() {
   const [depth, setDepth] = useState(1) // index into DEPTH_OPTIONS
   const [jobs, setJobs] = useState<Job[]>([])
   const [starting, setStarting] = useState(false)
+  const [showBuyCredits, setShowBuyCredits] = useState(false)
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   useEffect(() => {
     researchApi.list().then(setJobs).catch(() => {})
   }, [])
 
+  const neededCredits = DEPTH_OPTIONS[depth].posts
+  const insufficientCredits = (user?.credits ?? 0) < neededCredits
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!topic.trim()) return
+    if (insufficientCredits) {
+      setShowBuyCredits(true)
+      return
+    }
     setStarting(true)
     try {
-      const { job_id } = await researchApi.start(topic.trim(), DEPTH_OPTIONS[depth].posts)
+      const { job_id } = await researchApi.start(topic.trim(), neededCredits)
       navigate(`/dashboard/${job_id}`)
-    } catch (err) {
-      alert('Failed to start research. Is the backend running?')
+    } catch (err: any) {
+      if (err.response?.status === 402) {
+        setShowBuyCredits(true)
+      } else {
+        alert('Failed to start research. Is the backend running?')
+      }
       setStarting(false)
     }
   }
@@ -68,7 +84,7 @@ export default function Home() {
           <span className="text-xl font-bold text-primary">SubSight</span>
           <span className="text-xs text-muted ml-1 font-medium tracking-widest uppercase">Beta</span>
         </div>
-        <p className="text-sm text-muted">Reddit intelligence for startup founders</p>
+        <CreditBadge />
       </header>
 
       {/* Hero */}
@@ -102,7 +118,7 @@ export default function Home() {
               disabled={starting || !topic.trim()}
               className="bg-accent text-white font-semibold px-8 py-4 rounded-xl hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
             >
-              {starting ? 'Starting...' : 'Research'}
+              {starting ? 'Starting...' : insufficientCredits ? 'Buy Credits' : 'Research'}
             </button>
           </div>
 
@@ -120,10 +136,18 @@ export default function Home() {
                     : 'bg-card border-border text-muted hover:border-accent hover:text-primary'
                 }`}
               >
-                {opt.label} <span className="opacity-60">· {opt.posts} posts · {opt.time}</span>
+                {opt.label} <span className="opacity-60">· {opt.posts} SC · {opt.time}</span>
               </button>
             ))}
           </div>
+          {insufficientCredits && (
+            <p className="text-xs text-warning text-center mt-2">
+              You have {user?.credits ?? 0} SC — this depth needs {neededCredits} SC.{' '}
+              <button type="button" onClick={() => setShowBuyCredits(true)} className="text-accent hover:underline">
+                Buy more
+              </button>
+            </p>
+          )}
 
           {/* Example chips */}
           <div className="flex flex-wrap gap-2 mt-3 justify-center">
@@ -204,6 +228,13 @@ export default function Home() {
             </div>
           </div>
         </section>
+      )}
+
+      {showBuyCredits && (
+        <BuyCreditsModal
+          onClose={() => setShowBuyCredits(false)}
+          message={`You have ${user?.credits ?? 0} SC. This depth needs ${neededCredits} SC — top up to continue.`}
+        />
       )}
     </div>
   )

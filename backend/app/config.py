@@ -13,6 +13,12 @@ class Settings(BaseSettings):
     reddit_client_id: str = ""
     reddit_client_secret: str = ""
     reddit_username: str = ""
+    # Auth
+    jwt_secret: str = ""
+    # Razorpay
+    razorpay_key_id: str = ""
+    razorpay_key_secret: str = ""
+    razorpay_webhook_secret: str = ""
 
     class Config:
         env_file = BASE_DIR / ".env"

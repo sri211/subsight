@@ -5,10 +5,39 @@ from uuid import uuid4
 from app.models.database import Base
 
 
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid4()))
+    email = Column(String, unique=True, nullable=False, index=True)
+    password_hash = Column(String, nullable=False)
+    credits = Column(Integer, default=50)  # free credits granted on signup
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    transactions = relationship("CreditTransaction", back_populates="user", cascade="all, delete-orphan")
+
+
+class CreditTransaction(Base):
+    __tablename__ = "credit_transactions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"))
+    type = Column(String)  # "purchase" | "debit" | "signup_bonus"
+    amount = Column(Integer)  # positive for credit, negative for debit
+    balance_after = Column(Integer)
+    job_id = Column(String, nullable=True)  # set when type == "debit"
+    razorpay_order_id = Column(String, nullable=True, unique=True)  # idempotency guard for purchases
+    razorpay_payment_id = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="transactions")
+
+
 class Job(Base):
     __tablename__ = "jobs"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=True, index=True)
     topic = Column(String, nullable=False)
     status = Column(String, default="pending")  # pending | running | complete | failed
     progress = Column(Integer, default=0)

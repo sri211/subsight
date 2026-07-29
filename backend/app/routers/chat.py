@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
 from app.models.database import get_db
-from app.models.schemas import Job
+from app.models.schemas import Job, User
+from app.services.auth import get_current_user
 from app.services.chat_agent import chat
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
@@ -21,9 +22,9 @@ class ChatRequest(BaseModel):
 
 
 @router.post("/")
-def ask(req: ChatRequest, db: Session = Depends(get_db)):
+def ask(req: ChatRequest, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     job = db.query(Job).filter(Job.id == req.job_id).first()
-    if not job:
+    if not job or job.user_id != user.id:
         raise HTTPException(status_code=404, detail="Job not found")
     if job.status != "complete":
         raise HTTPException(status_code=400, detail="Research not yet complete")

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.models.database import init_db, SessionLocal
 from app.models.schemas import Job
-from app.routers import research, results, chat
+from app.routers import research, results, chat, auth, payments
 
 app = FastAPI(title="SubSight API", version="1.0.0")
 
@@ -25,6 +25,8 @@ app.add_middleware(
 app.include_router(research.router)
 app.include_router(results.router)
 app.include_router(chat.router)
+app.include_router(auth.router)
+app.include_router(payments.router)
 
 
 @app.on_event("startup")

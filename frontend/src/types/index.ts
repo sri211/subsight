@@ -134,3 +134,22 @@ export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
 }
+
+export interface User {
+  id: string
+  email: string
+  credits: number
+}
+
+export interface CreditPack {
+  id: '1000' | '3000' | '10000'
+  credits: number
+  priceRupees: number
+  label: string
+}
+
+export const CREDIT_PACKS: CreditPack[] = [
+  { id: '1000', credits: 1000, priceRupees: 299, label: 'Starter' },
+  { id: '3000', credits: 3000, priceRupees: 799, label: 'Growth' },
+  { id: '10000', credits: 10000, priceRupees: 1999, label: 'Scale' },
+]

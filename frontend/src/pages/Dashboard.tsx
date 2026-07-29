@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, CheckCircle, Loader2, XCircle } from 'lucide-react'
 import { useJobStatus } from '../hooks/useJobStatus'
+import CreditBadge from '../components/payments/CreditBadge'
 import Sidebar from '../components/layout/Sidebar'
 import OverviewTab from '../components/overview/OverviewTab'
 import TopicsTab from '../components/topics/TopicsTab'
@@ -50,6 +51,9 @@ export default function Dashboard() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <span className="font-bold text-primary">SubSight</span>
+          <div className="ml-auto">
+            <CreditBadge />
+          </div>
         </header>
 
         <div className="flex-1 flex items-center justify-center">
@@ -143,9 +147,12 @@ export default function Dashboard() {
             <span className="text-sm text-muted capitalize">{topic}</span>
           </>
         )}
-        <div className="ml-auto flex items-center gap-2 text-xs text-positive">
-          <CheckCircle className="w-3.5 h-3.5" />
-          Analysis complete
+        <div className="ml-auto flex items-center gap-4">
+          <div className="flex items-center gap-2 text-xs text-positive">
+            <CheckCircle className="w-3.5 h-3.5" />
+            Analysis complete
+          </div>
+          <CreditBadge />
         </div>
       </header>
 
