@@ -70,11 +70,14 @@ def create_order(req: CreateOrderRequest, user: User = Depends(get_current_user)
         raise HTTPException(status_code=400, detail="Unknown credit pack")
     credits, amount_paise = CREDIT_PACKS[req.pack_id]
 
-    order = _client().order.create({
-        "amount": amount_paise,
-        "currency": "INR",
-        "notes": {"user_id": user.id, "pack_id": req.pack_id},
-    })
+    try:
+        order = _client().order.create({
+            "amount": amount_paise,
+            "currency": "INR",
+            "notes": {"user_id": user.id, "pack_id": req.pack_id},
+        })
+    except razorpay.errors.BadRequestError:
+        raise HTTPException(status_code=503, detail="Payments are temporarily unavailable. Please try again shortly.")
     return {
         "order_id": order["id"],
         "amount": amount_paise,
