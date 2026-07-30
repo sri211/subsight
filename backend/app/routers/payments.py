@@ -42,7 +42,13 @@ def _credit_order(db: Session, order_id: str, payment_id: str) -> User | None:
     if db.query(CreditTransaction).filter(CreditTransaction.razorpay_order_id == order_id).first():
         return None
 
-    order = _client().order.fetch(order_id)
+    try:
+        order = _client().order.fetch(order_id)
+    except razorpay.errors.BadRequestError:
+        # Order doesn't exist at Razorpay, or a transient API issue — either
+        # way there's nothing to credit. Don't crash the webhook handler.
+        raise HTTPException(status_code=400, detail="Order not found")
+
     notes = order.get("notes", {})
     user_id = notes.get("user_id")
     pack_id = notes.get("pack_id")
