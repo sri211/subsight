@@ -139,6 +139,7 @@ export interface User {
   id: string
   email: string
   credits: number
+  is_admin: boolean
 }
 
 export interface CreditPack {
@@ -153,3 +154,60 @@ export const CREDIT_PACKS: CreditPack[] = [
   { id: '3000', credits: 3000, priceRupees: 799, label: 'Growth' },
   { id: '10000', credits: 10000, priceRupees: 1999, label: 'Scale' },
 ]
+
+export interface AdminStats {
+  total_users: number
+  total_revenue_inr: number
+  total_credits_outstanding: number
+  total_credits_granted_free: number
+  total_jobs_run: number
+  total_posts_analyzed: number
+  signups_by_day: { date: string; value: number }[]
+  revenue_by_day: { date: string; value: number }[]
+}
+
+export interface AdminUserRow {
+  id: string
+  email: string
+  credits: number
+  total_purchased_inr: number
+  total_jobs: number
+  created_at: string
+  is_admin: boolean
+}
+
+export interface AdminUsersData {
+  total: number
+  page: number
+  page_size: number
+  users: AdminUserRow[]
+}
+
+export interface AdminTransaction {
+  id: number
+  type: string
+  amount: number
+  balance_after: number
+  job_id: string | null
+  amount_paise: number | null
+  note: string | null
+  created_at: string
+}
+
+export interface AdminJobRow {
+  id: string
+  topic: string
+  status: string
+  post_count: number
+  created_at: string
+}
+
+export interface AdminUserDetail {
+  id: string
+  email: string
+  credits: number
+  is_admin: boolean
+  created_at: string
+  transactions: AdminTransaction[]
+  jobs: AdminJobRow[]
+}

@@ -167,7 +167,7 @@ function CategoryGrid({ interests }: { interests: CrossInterest[] }) {
         Interest Categories
         <span className="normal-case font-normal ml-2 text-muted/60">— grouped by lifestyle theme</span>
       </h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {sorted.map(({ cat, items }) => (
           <div
             key={cat.label}
@@ -222,7 +222,7 @@ function AudienceInsights({ interests, isUserHistory }: { interests: CrossIntere
           {isUserHistory ? '— strongest overlaps' : '— most active discussion hubs'}
         </span>
       </h3>
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {top5.map((item, i) => {
           const cat = categorize(item.subreddit)
           return (
@@ -255,7 +255,7 @@ function FullRanking({ interests, isUserHistory }: { interests: CrossInterest[];
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <h3 className="text-sm font-semibold text-muted uppercase tracking-widest">
           {isUserHistory ? 'Full Overlap Ranking' : 'Full Community Ranking'}
         </h3>
@@ -267,22 +267,22 @@ function FullRanking({ interests, isUserHistory }: { interests: CrossInterest[];
         {interests.map((item, idx) => {
           const cat = categorize(item.subreddit)
           return (
-            <div key={item.subreddit} className="flex items-center gap-3 group">
-              <span className="text-xs text-muted w-6 text-right font-mono flex-shrink-0">{idx + 1}</span>
+            <div key={item.subreddit} className="flex items-center gap-2 sm:gap-3 group">
+              <span className="text-xs text-muted w-5 sm:w-6 text-right font-mono flex-shrink-0">{idx + 1}</span>
 
               {/* Category icon */}
               <span className="text-sm flex-shrink-0">{cat.icon}</span>
 
               {/* Name + category */}
-              <div className="w-48 flex-shrink-0">
+              <div className="w-28 sm:w-48 flex-shrink-0">
                 <a
                   href={`https://reddit.com/r/${item.subreddit}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm font-medium text-primary hover:text-accent transition-colors flex items-center gap-1"
+                  className="text-sm font-medium text-primary hover:text-accent transition-colors flex items-center gap-1 truncate"
                 >
-                  r/{item.subreddit}
-                  <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="truncate">r/{item.subreddit}</span>
+                  <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 hidden sm:inline" />
                 </a>
                 <span
                   className="text-xs px-1.5 py-0.5 rounded-full font-medium"
@@ -293,7 +293,7 @@ function FullRanking({ interests, isUserHistory }: { interests: CrossInterest[];
               </div>
 
               {/* Bar */}
-              <div className="flex-1">
+              <div className="flex-1 hidden sm:block">
                 <div className="bg-border rounded-full h-2 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-700"
@@ -307,7 +307,7 @@ function FullRanking({ interests, isUserHistory }: { interests: CrossInterest[];
               </div>
 
               {/* Stats */}
-              <div className="text-right flex-shrink-0 w-28">
+              <div className="text-right flex-shrink-0 flex-1 sm:flex-none sm:w-28">
                 <div className="text-xs font-semibold" style={{ color: cat.color }}>{item.percentage}%</div>
                 <div className="text-xs text-muted">{item.user_count} {isUserHistory ? 'users' : 'posts'}</div>
               </div>
@@ -329,7 +329,7 @@ function TargetingPlaybook({ insights }: { insights: AudienceInsight[] }) {
       <p className="text-xs text-muted/60 mb-3">
         AI-generated targeting strategies built from the community data above — where to show up, what to say
       </p>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {insights.map((ins, i) => (
           <div key={i} className="bg-gradient-to-br from-accent/8 to-transparent border border-accent/25 rounded-xl p-5">
             <div className="flex items-start gap-2.5 mb-2">

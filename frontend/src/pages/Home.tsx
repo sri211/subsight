@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Search, TrendingUp, Trash2, ExternalLink, Clock, MessageSquare } from 'lucide-react'
+import { useNavigate, Link } from 'react-router-dom'
+import { Search, TrendingUp, Trash2, ExternalLink, Clock, MessageSquare, ShieldCheck } from 'lucide-react'
 import { researchApi } from '../lib/api'
 import { useAuth } from '../hooks/useAuth'
 import CreditBadge from '../components/payments/CreditBadge'
@@ -78,23 +78,35 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-bg flex flex-col">
       {/* Top bar */}
-      <header className="border-b border-border px-8 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="w-6 h-6 text-accent" />
-          <span className="text-xl font-bold text-primary">SubSight</span>
-          <span className="text-xs text-muted ml-1 font-medium tracking-widest uppercase">Beta</span>
+      <header className="border-b border-border px-4 sm:px-8 py-4 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <TrendingUp className="w-6 h-6 text-accent flex-shrink-0" />
+          <span className="text-lg sm:text-xl font-bold text-primary truncate">SubSight</span>
+          <span className="text-xs text-muted ml-1 font-medium tracking-widest uppercase hidden sm:inline">Beta</span>
         </div>
-        <CreditBadge />
+        <div className="flex items-center gap-3">
+          {user?.is_admin && (
+            <Link
+              to="/admin"
+              className="flex items-center gap-1.5 text-xs font-medium text-muted hover:text-accent transition-colors"
+              title="Admin Dashboard"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              <span className="hidden sm:inline">Admin</span>
+            </Link>
+          )}
+          <CreditBadge />
+        </div>
       </header>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-16">
-        <div className="w-full max-w-2xl text-center mb-12">
-          <h1 className="text-5xl font-extrabold text-primary leading-tight mb-4">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-10 sm:py-16">
+        <div className="w-full max-w-2xl text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-primary leading-tight mb-4">
             Understand your customers<br />
             <span className="text-accent">through Reddit</span>
           </h1>
-          <p className="text-muted text-lg">
+          <p className="text-muted text-base sm:text-lg">
             Enter a topic. We'll scrape thousands of conversations, extract insights,
             build customer personas, and let you ask AI questions about the data.
           </p>
@@ -102,7 +114,7 @@ export default function Home() {
 
         {/* Search form */}
         <form onSubmit={handleSearch} className="w-full max-w-xl">
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
               <input
@@ -166,7 +178,7 @@ export default function Home() {
         </form>
 
         {/* Info cards */}
-        <div className="grid grid-cols-3 gap-4 w-full max-w-xl mt-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-xl mt-8 sm:mt-12">
           {[
             { icon: '🎯', label: 'Customer Personas', desc: 'Archetypes from real conversations' },
             { icon: '💬', label: 'AI Chat Agent', desc: 'Ask questions about your data' },
@@ -183,7 +195,7 @@ export default function Home() {
 
       {/* Recent research */}
       {jobs.length > 0 && (
-        <section className="border-t border-border px-8 py-8">
+        <section className="border-t border-border px-4 sm:px-8 py-8">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-sm font-semibold text-muted uppercase tracking-widest mb-4">
               Recent Research
@@ -193,16 +205,24 @@ export default function Home() {
                 <div
                   key={job.id}
                   onClick={() => navigate(`/dashboard/${job.id}`)}
-                  className="flex items-center gap-4 bg-card border border-border rounded-xl px-5 py-4 cursor-pointer hover:border-accent transition-colors group"
+                  className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 bg-card border border-border rounded-xl px-4 sm:px-5 py-4 cursor-pointer hover:border-accent transition-colors group"
                 >
-                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${statusDot(job.status)}`} />
-                  <div className="flex-1 min-w-0">
-                    <span className="font-semibold text-primary capitalize">{job.topic}</span>
-                    {job.status === 'running' && (
-                      <span className="ml-3 text-xs text-accent">{job.stage}</span>
-                    )}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${statusDot(job.status)}`} />
+                    <div className="flex-1 min-w-0">
+                      <span className="font-semibold text-primary capitalize truncate block">{job.topic}</span>
+                      {job.status === 'running' && (
+                        <span className="text-xs text-accent">{job.stage}</span>
+                      )}
+                    </div>
+                    <button
+                      onClick={e => handleDelete(job.id, e)}
+                      className="sm:hidden text-muted hover:text-negative transition-colors flex-shrink-0"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted">
+                  <div className="flex items-center gap-2 text-xs text-muted flex-wrap sm:ml-auto sm:flex-nowrap">
                     {job.post_count > 0 && (
                       <span className="flex items-center gap-1">
                         <MessageSquare className="w-3 h-3" /> {job.post_count} posts
@@ -215,11 +235,11 @@ export default function Home() {
                       <Clock className="w-3 h-3" />
                       {job.created_at ? new Date(job.created_at).toLocaleDateString() : ''}
                     </span>
-                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:inline" />
                   </div>
                   <button
                     onClick={e => handleDelete(job.id, e)}
-                    className="text-muted hover:text-negative transition-colors opacity-0 group-hover:opacity-100"
+                    className="hidden sm:block text-muted hover:text-negative transition-colors opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

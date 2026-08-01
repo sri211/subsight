@@ -24,7 +24,7 @@ function StatCard({ icon: Icon, label, value, color, hint }: {
 
 export default function HeroStats({ postCount, commentCount, userCount, subredditCount }: Props) {
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
       <StatCard icon={MessageSquare} label="Posts Analyzed" value={postCount} color="bg-accent/10 text-accent"
         hint="Reddit posts scraped and fed into the AI analysis" />
       <StatCard icon={MessageCircle} label="Comments" value={commentCount} color="bg-purple-500/10 text-purple-400"

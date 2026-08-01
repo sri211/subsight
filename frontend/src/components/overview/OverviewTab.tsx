@@ -86,7 +86,7 @@ export default function OverviewTab({ jobId, onTopicLoad }: Props) {
       />
 
       {/* Row 2: sentiment + subreddits */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <SentimentGauge breakdown={data.sentiment_breakdown} />
         <SubredditBars data={data.subreddit_breakdown} />
       </div>

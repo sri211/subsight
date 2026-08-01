@@ -39,7 +39,7 @@ export default function ChatPanel({ jobId, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-96 flex flex-col bg-card border-l border-border shadow-2xl">
+    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-96 flex flex-col bg-card border-l border-border shadow-2xl">
       {/* Header */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
         <div className="w-8 h-8 rounded-xl bg-accent/20 flex items-center justify-center">

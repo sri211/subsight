@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Float, Text, DateTime, ForeignKey, JSON
+from sqlalchemy import Column, String, Integer, Float, Text, DateTime, ForeignKey, JSON, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from uuid import uuid4
@@ -12,6 +12,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False, index=True)
     password_hash = Column(String, nullable=False)
     credits = Column(Integer, default=50)  # free credits granted on signup
+    is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     transactions = relationship("CreditTransaction", back_populates="user", cascade="all, delete-orphan")
@@ -22,12 +23,14 @@ class CreditTransaction(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"))
-    type = Column(String)  # "purchase" | "debit" | "signup_bonus"
+    type = Column(String)  # "purchase" | "debit" | "signup_bonus" | "admin_grant"
     amount = Column(Integer)  # positive for credit, negative for debit
     balance_after = Column(Integer)
     job_id = Column(String, nullable=True)  # set when type == "debit"
     razorpay_order_id = Column(String, nullable=True, unique=True)  # idempotency guard for purchases
     razorpay_payment_id = Column(String, nullable=True)
+    amount_paise = Column(Integer, nullable=True)  # actual ₹ paid, set only on "purchase" rows
+    note = Column(Text, nullable=True)  # reason, used for admin_grant
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="transactions")

@@ -93,7 +93,7 @@ export default function TopicTreemap({ topics }: Props) {
       </div>
 
       {/* Topic keyword cards */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {topics.map(t => (
           <div key={t.id} className="bg-card border border-border rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">

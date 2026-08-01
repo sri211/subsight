@@ -59,11 +59,11 @@ def _credit_order(db: Session, order_id: str, payment_id: str) -> User | None:
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    credits, _ = CREDIT_PACKS[pack_id]
+    credits, amount_paise = CREDIT_PACKS[pack_id]
     user.credits += credits
     db.add(CreditTransaction(
         user_id=user.id, type="purchase", amount=credits, balance_after=user.credits,
-        razorpay_order_id=order_id, razorpay_payment_id=payment_id,
+        razorpay_order_id=order_id, razorpay_payment_id=payment_id, amount_paise=amount_paise,
     ))
     db.commit()
     db.refresh(user)

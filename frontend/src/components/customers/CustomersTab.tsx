@@ -37,7 +37,7 @@ export default function CustomersTab({ jobId }: { jobId: string }) {
 
       {/* Persona cards */}
       {data.personas.length > 0 ? (
-        <div className={`grid gap-4 ${data.personas.length >= 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${data.personas.length >= 3 ? 'lg:grid-cols-3' : ''}`}>
           {data.personas.map(persona => (
             <PersonaCard key={persona.id} persona={persona} />
           ))}

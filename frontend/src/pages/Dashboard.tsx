@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, CheckCircle, Loader2, XCircle } from 'lucide-react'
+import { ArrowLeft, CheckCircle, Loader2, XCircle, Menu } from 'lucide-react'
 import { useJobStatus } from '../hooks/useJobStatus'
 import CreditBadge from '../components/payments/CreditBadge'
 import Sidebar from '../components/layout/Sidebar'
@@ -29,6 +29,7 @@ export default function Dashboard() {
   const { status } = useJobStatus(jobId ?? null, true)
   const [activeTab, setActiveTab] = useState('overview')
   const [chatOpen, setChatOpen] = useState(false)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [topic, setTopic] = useState('')
 
   useEffect(() => {
@@ -46,7 +47,7 @@ export default function Dashboard() {
   if (isLoading || isFailed) {
     return (
       <div className="min-h-screen bg-bg flex flex-col">
-        <header className="border-b border-border px-8 py-4 flex items-center gap-4">
+        <header className="border-b border-border px-4 sm:px-8 py-4 flex items-center gap-4">
           <button onClick={() => navigate('/')} className="text-muted hover:text-primary transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -57,7 +58,7 @@ export default function Dashboard() {
         </header>
 
         <div className="flex-1 flex items-center justify-center">
-          <div className="w-full max-w-lg px-8">
+          <div className="w-full max-w-lg px-4 sm:px-8">
             {isFailed ? (
               <div className="text-center">
                 <XCircle className="w-12 h-12 text-negative mx-auto mb-4" />
@@ -135,20 +136,26 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-bg flex flex-col">
       {/* Top bar */}
-      <header className="border-b border-border px-6 py-3 flex items-center gap-4 flex-shrink-0">
+      <header className="border-b border-border px-3 sm:px-6 py-3 flex items-center gap-2 sm:gap-4 flex-shrink-0 flex-wrap">
+        <button
+          onClick={() => setMobileNavOpen(true)}
+          className="md:hidden text-muted hover:text-primary transition-colors"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
         <button onClick={() => navigate('/')} className="text-muted hover:text-primary transition-colors">
           <ArrowLeft className="w-4 h-4" />
         </button>
-        <div className="w-px h-4 bg-border" />
-        <span className="font-bold text-primary text-sm">SubSight</span>
+        <div className="w-px h-4 bg-border hidden sm:block" />
+        <span className="font-bold text-primary text-sm hidden sm:inline">SubSight</span>
         {topic && (
           <>
-            <div className="w-px h-4 bg-border" />
-            <span className="text-sm text-muted capitalize">{topic}</span>
+            <div className="w-px h-4 bg-border hidden sm:block" />
+            <span className="text-sm text-muted capitalize truncate max-w-[140px] sm:max-w-none">{topic}</span>
           </>
         )}
-        <div className="ml-auto flex items-center gap-4">
-          <div className="flex items-center gap-2 text-xs text-positive">
+        <div className="ml-auto flex items-center gap-2 sm:gap-4">
+          <div className="hidden sm:flex items-center gap-2 text-xs text-positive">
             <CheckCircle className="w-3.5 h-3.5" />
             Analysis complete
           </div>
@@ -157,9 +164,28 @@ export default function Dashboard() {
       </header>
 
       {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar activeTab={activeTab} onTabChange={setActiveTab} topic={topic || 'Loading...'} />
-        <main className="flex-1 overflow-y-auto p-6">
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Desktop sidebar */}
+        <div className="hidden md:flex">
+          <Sidebar activeTab={activeTab} onTabChange={setActiveTab} topic={topic || 'Loading...'} />
+        </div>
+
+        {/* Mobile drawer */}
+        {mobileNavOpen && (
+          <div className="md:hidden fixed inset-0 z-50 flex">
+            <div className="fixed inset-0 bg-black/60" onClick={() => setMobileNavOpen(false)} />
+            <div className="relative z-10">
+              <Sidebar
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                topic={topic || 'Loading...'}
+                onClose={() => setMobileNavOpen(false)}
+              />
+            </div>
+          </div>
+        )}
+
+        <main className="flex-1 overflow-y-auto p-3 sm:p-6">
           {renderTab()}
         </main>
       </div>

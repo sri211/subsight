@@ -18,21 +18,29 @@ def get_db():
         db.close()
 
 
+def _add_column_if_missing(inspector, table: str, column: str, ddl_type: str):
+    if table not in inspector.get_table_names():
+        return  # table doesn't exist yet — create_all() will build it fresh
+    cols = {c["name"] for c in inspector.get_columns(table)}
+    if column not in cols:
+        from sqlalchemy import text
+        with engine.begin() as conn:
+            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {ddl_type}"))
+
+
 def _migrate():
     """Lightweight, idempotent column migrations for the existing SQLite file.
 
     Base.metadata.create_all() only creates missing tables — it never alters
     columns on tables that already exist, so new columns need adding by hand.
     """
-    from sqlalchemy import inspect, text
+    from sqlalchemy import inspect
 
     inspector = inspect(engine)
-    if "jobs" not in inspector.get_table_names():
-        return  # fresh DB — create_all() will build the full current schema
-    cols = {c["name"] for c in inspector.get_columns("jobs")}
-    if "user_id" not in cols:
-        with engine.begin() as conn:
-            conn.execute(text("ALTER TABLE jobs ADD COLUMN user_id VARCHAR"))
+    _add_column_if_missing(inspector, "jobs", "user_id", "VARCHAR")
+    _add_column_if_missing(inspector, "users", "is_admin", "BOOLEAN DEFAULT 0")
+    _add_column_if_missing(inspector, "credit_transactions", "amount_paise", "INTEGER")
+    _add_column_if_missing(inspector, "credit_transactions", "note", "TEXT")
 
 
 def init_db():

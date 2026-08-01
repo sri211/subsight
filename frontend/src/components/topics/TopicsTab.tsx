@@ -203,7 +203,7 @@ export default function TopicsTab({ jobId }: { jobId: string }) {
       </div>
 
       {/* Quick stats row */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-card border border-border rounded-xl p-4">
           <div className="text-xs text-muted uppercase tracking-widest mb-1">Most Discussed</div>
           <div className="font-bold text-primary text-sm">{mostDiscussed.name}</div>
@@ -232,7 +232,7 @@ export default function TopicsTab({ jobId }: { jobId: string }) {
         <h3 className="text-sm font-semibold text-muted uppercase tracking-widest mb-3">
           Topic Deep Dive — click any card to see top posts
         </h3>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {data.map(t => <TopicCard key={t.id} topic={t} />)}
         </div>
       </div>

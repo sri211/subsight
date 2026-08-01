@@ -2,6 +2,7 @@ import axios from 'axios'
 import type {
   Job, JobStatus, OverviewData, TopicCluster, PersonasData,
   InterestsData, Product, ConversationsData, ChatMessage, User,
+  AdminStats, AdminUsersData, AdminUserDetail,
 } from '../types'
 
 // In dev, Vite proxies /api -> localhost:8001 (see vite.config.ts).
@@ -67,4 +68,13 @@ export const researchApi = {
 export const chatApi = {
   ask: (job_id: string, message: string, history: ChatMessage[]) =>
     api.post<{ answer: string }>('/chat/', { job_id, message, history }).then(r => r.data),
+}
+
+export const adminApi = {
+  stats: () => api.get<AdminStats>('/admin/stats').then(r => r.data),
+  listUsers: (search = '', page = 1) =>
+    api.get<AdminUsersData>('/admin/users', { params: { search, page } }).then(r => r.data),
+  getUser: (userId: string) => api.get<AdminUserDetail>(`/admin/users/${userId}`).then(r => r.data),
+  grantCredits: (userId: string, amount: number, note: string) =>
+    api.post<{ credits: number }>(`/admin/users/${userId}/grant-credits`, { amount, note }).then(r => r.data),
 }

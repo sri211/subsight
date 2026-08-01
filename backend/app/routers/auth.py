@@ -24,7 +24,7 @@ class LoginRequest(BaseModel):
 
 
 def _user_out(user: User) -> dict:
-    return {"id": user.id, "email": user.email, "credits": user.credits}
+    return {"id": user.id, "email": user.email, "credits": user.credits, "is_admin": bool(user.is_admin)}
 
 
 @router.post("/signup")
