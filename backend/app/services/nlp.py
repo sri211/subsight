@@ -99,6 +99,7 @@ STOP_WORDS = {
     "lot", "bit", "kind", "sort", "stuff", "things", "something", "anything",
     "going", "back", "well", "around", "about", "when", "while",
     "where", "what", "which", "who", "how", "why", "here", "there",
+    "into", "onto", "over", "under", "off", "out", "away",
     "never", "always", "every", "each", "other", "another", "same",
     "because", "since", "though", "although", "however", "therefore",
     "actually", "basically", "literally", "probably", "maybe", "probably",
@@ -184,28 +185,37 @@ def cluster_topics(texts: list[str], n_clusters: int = 8) -> list[int]:
         return [i % n_clusters for i in range(len(texts))]
 
 
-def get_cluster_top_terms(texts: list[str], labels: list[int], topic: str = "") -> dict[int, list[str]]:
-    """Returns top terms per cluster.
+def topic_stem_set(topic: str) -> set[str]:
+    """Rough stems of a topic's words, e.g. "protein powder" -> {"prote", "powde"}."""
+    import re
+    stems = set()
+    for w in re.findall(r"[a-zA-Z]+", (topic or "").lower()):
+        if len(w) >= 3:
+            stems.add(w[:5] if len(w) > 5 else w)
+    return stems
 
-    Terms made purely of the research topic's own words are excluded — every
-    cluster obviously contains "protein powder" in a protein powder search, so
-    those words can't distinguish one cluster from another.
-    """
+
+def is_topic_only_term(term: str, topic_stems: set[str]) -> bool:
+    """True if every word in `term` is just a form of the topic itself —
+    every cluster in a "protein powder" search obviously contains "protein",
+    so that word alone can't distinguish one cluster/segment from another."""
+    words = term.split()
+    return bool(words) and all(
+        any(w.startswith(stem) or stem.startswith(w[:4]) for stem in topic_stems)
+        for w in words
+    )
+
+
+def get_cluster_top_terms(texts: list[str], labels: list[int], topic: str = "") -> dict[int, list[str]]:
+    """Returns top terms per cluster, excluding terms made purely of the
+    research topic's own words (see is_topic_only_term)."""
     from sklearn.feature_extraction.text import TfidfVectorizer
     import numpy as np
-    import re
 
-    topic_stems = set()
-    for w in re.findall(r"[a-zA-Z]+", topic.lower()):
-        if len(w) >= 3:
-            topic_stems.add(w[:5] if len(w) > 5 else w)
+    topic_stems = topic_stem_set(topic)
 
     def _is_topic_only(term: str) -> bool:
-        words = term.split()
-        return bool(words) and all(
-            any(w.startswith(stem) or stem.startswith(w[:4]) for stem in topic_stems)
-            for w in words
-        )
+        return is_topic_only_term(term, topic_stems)
 
     n_clusters = max(labels) + 1 if labels else 1
     cluster_terms: dict[int, list[str]] = {}
@@ -261,8 +271,10 @@ def build_activity_timeline(posts: list[dict]) -> list[dict]:
     return [{"month": k, "count": v} for k, v in sorted(monthly.items(), key=lambda x: sort_key(x[0]))]
 
 
-# Mega-viral catch-all subreddits that nearly every Redditor touches — they
-# say nothing about who an audience is, so they'd crowd out real signal
+# Mega-viral catch-all and story/drama subreddits — a post here that happens
+# to contain a topic keyword is almost never genuine market-research signal
+# (entertainment/drama, not community discussion of the topic), and they'd
+# crowd out real signal in both cross-interests and the main dataset.
 LOW_SIGNAL_SUBS = {
     "askreddit", "funny", "pics", "memes", "dankmemes", "me_irl", "meirl",
     "mildlyinfuriating", "mildlyinteresting", "interestingasfuck",
@@ -272,6 +284,14 @@ LOW_SIGNAL_SUBS = {
     "clevercomebacks", "murderedbywords", "rareinsults", "adviceanimals",
     "wholesomememes", "shitposting", "okbuddyretard", "teenagers",
     "casualconversation", "self", "rant", "vent", "polls", "answers",
+    # Story/drama subreddits — popular enough to keyword-match almost any
+    # topic, but the content is personal narrative, not topic discussion
+    "bestofredditorupdates", "tifu", "confession", "confessions",
+    "offmychest", "trueoffmychest", "prorevenge", "pettyrevenge",
+    "maliciouscompliance", "relationship_advice", "relationships",
+    "entitledparents", "choosingbeggars", "amitheasshole2",
+    # Bot-run aggregator subreddits — auto-posted, not organic discussion
+    "autonewspaper", "autonewspaper2", "worldnewsvideo",
 }
 
 

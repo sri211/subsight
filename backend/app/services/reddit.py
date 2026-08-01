@@ -12,6 +12,7 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from app.config import settings
+from app.services.nlp import LOW_SIGNAL_SUBS
 
 # ── Apify ─────────────────────────────────────────────────────────────────────
 APIFY_BASE = "https://api.apify.com/v2"
@@ -475,11 +476,21 @@ def _topic_stems(topic: str) -> list[str]:
     return stems or [topic.lower().strip()]
 
 def _filter_relevant(stems: list[str], posts: list[dict]) -> tuple[list[dict], int]:
-    """Keep posts whose title/body mentions at least one topic stem (word-prefix match)."""
+    """Keep posts whose title/body mentions at least one topic stem (word-prefix match).
+
+    Also drops posts from known story/drama/bot subreddits outright — a post
+    in r/AmItheAsshole that happens to contain a topic keyword is personal
+    narrative, not genuine community discussion of the topic, and pollutes
+    every downstream insight (subreddit rankings, personas, keywords).
+    """
     import re as _re
     patterns = [_re.compile(rf"\b{_re.escape(s)}") for s in stems]
     kept, dropped = [], 0
     for p in posts:
+        sub = (p.get("subreddit") or "").lower().lstrip("r/").strip()
+        if sub in LOW_SIGNAL_SUBS:
+            dropped += 1
+            continue
         text = f"{p.get('title', '')} {p.get('body', '')}".lower()
         if any(pat.search(text) for pat in patterns):
             kept.append(p)

@@ -6,6 +6,7 @@ from app.models.schemas import Job, Post, Comment, UserProfile, Topic, Persona, 
 from app.services import reddit as reddit_svc
 from app.services import nlp as nlp_svc
 from app.services import claude as claude_svc
+from app.services import persona_engine
 
 
 def _update_job(db: Session, job: Job, status: str, progress: int, stage: str):
@@ -211,12 +212,15 @@ def run_pipeline(job_id: str, topic: str, max_posts: int, db: Session):
             cross_interests_meta = {"method": "community_distribution", "sample_size": len(posts_data)}
         activity_timeline = nlp_svc.build_activity_timeline(posts_data)
 
-        # ── Stage 5: Claude analysis (Sonnet, batched) ────────────────────────
-        _update_job(db, job, "running", 70, "Generating AI personas and insights...")
+        # ── Stage 5: Customer DNA — local, zero-cost (TF-IDF + K-Means +   ────
+        # VADER, no LLM calls). Personas cluster AUTHORS by combined text so
+        # each segment is a real recurring type of person; pain points cluster
+        # negative-sentiment sentences and use the closest-to-centroid one
+        # verbatim as the description, rather than an LLM-synthesized summary.
+        _update_job(db, job, "running", 70, "Building customer personas (local analysis)...")
 
-        high_score_posts = sorted(posts_data, key=lambda x: x.get("score", 0), reverse=True)[:40]
-        personas_raw = claude_svc.generate_personas(topic, high_score_posts)
-        pain_points_raw = claude_svc.generate_pain_points(topic, high_score_posts)
+        personas_raw = persona_engine.generate_personas_local(posts_data, comments_data, topic=topic)
+        pain_points_raw = persona_engine.generate_pain_points_local(posts_data, comments_data)
 
         # Save personas
         db.query(Persona).filter(Persona.job_id == job_id).delete()
